@@ -1,13 +1,13 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
+import Subconverter from "../views/Subconverter.vue";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "SubConverter",
-    component: () => import("../views/Subconverter.vue")
+    component: Subconverter
   }
 ];
 

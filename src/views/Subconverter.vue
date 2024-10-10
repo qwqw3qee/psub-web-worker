@@ -199,10 +199,11 @@ const project = process.env.VUE_APP_PROJECT
 const remoteConfigSample = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG
 const subDocAdvanced = process.env.VUE_APP_SUBCONVERTER_DOC_ADVANCED
 const gayhubRelease = process.env.VUE_APP_BACKEND_RELEASE
-const defaultBackend = process.env.VUE_APP_SUBCONVERTER_DEFAULT_BACKEND + '/sub?'
+const defaultBackend = location.href + 'sub?'
 const shortUrlBackend = process.env.VUE_APP_MYURLS_API
 const configUploadBackend = process.env.VUE_APP_CONFIG_UPLOAD_API
 const tgBotLink = process.env.VUE_APP_BOT_LINK
+const remoteConfigOptionsLink = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG_OPTIONS_LINK
 
 export default {
   data() {
@@ -232,7 +233,10 @@ export default {
           Trojan: "trojan",
           Surge3: "surge&ver=3",
         },
-        backendOptions: [{ value: "http://127.0.0.1:25500/sub?" }],
+        backendOptions: [
+          { value: defaultBackend },
+          { value: "http://127.0.0.1:25500/sub?" },
+        ],
         remoteConfig: [
           {
             label: "universal",
@@ -369,6 +373,7 @@ export default {
     this.form.clientType = "clash";
     this.notify();
     this.getBackendVersion();
+    this.getRemoteConfigOptions();
   },
   methods: {
     onCopy() {
@@ -751,7 +756,18 @@ export default {
         value: itemValue
       }
       localStorage.setItem(itemKey, JSON.stringify(data))
-    }
+    },
+    getRemoteConfigOptions() {
+      this.$axios.get(remoteConfigOptionsLink).then(res => {
+        if (res.data.code === 1) {
+          this.options.remoteConfig = res.data.data
+        } else {
+          this.$message.error(res.data.message)
+        }
+      }).catch(err => {
+        this.$message.error(err)
+      })
+    },
   },
 };
 </script>
